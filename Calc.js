@@ -18,12 +18,19 @@ function startGame() {
     document.getElementById('feedback').textContent = '';  // Clear feedback on game start
     startTime = new Date();
     generateQuestion();
-    // Listen for "Enter" key press to submit the answer
-    document.getElementById('answer').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            submitAnswer();
-        }
-    });
+    document.getElementById('answer').value = ''; // Clear input field on game start
+
+    // Remove previous event listeners to avoid duplication
+    const answerInput = document.getElementById('answer');
+    answerInput.removeEventListener('keydown', submitOnEnter);
+    answerInput.addEventListener('keydown', submitOnEnter);
+}
+
+// Submit on "Enter" key press
+function submitOnEnter(event) {
+    if (event.key === 'Enter') {
+        submitAnswer();
+    }
 }
 
 // Generate a new question
@@ -43,19 +50,25 @@ function generateQuestion() {
 // Submit the answer and show feedback
 function submitAnswer() {
     const answer = parseInt(document.getElementById('answer').value);
-    if (!isNaN(answer)) { // Validate if answer is a number
+    const feedbackElement = document.getElementById('feedback');
+
+    if (!isNaN(answer)) {  // Ensure the answer is a valid number
         if (answer === currentQuestion) {
             correctAnswers++;
-            document.getElementById('feedback').textContent = `Correct!`;
+            feedbackElement.textContent = "Correct!";
+            feedbackElement.style.color = "green";  // Set feedback color to green for correct
         } else {
-            document.getElementById('feedback').textContent = `Wrong! The correct answer is: ${currentQuestion}`;
+            feedbackElement.textContent = `Wrong! The correct answer is: ${currentQuestion}`;
+            feedbackElement.style.color = "red";  // Set feedback color to red for wrong
             score -= 3;
         }
+
         questionsAnswered++;
+        generateQuestion();
         document.getElementById('answer').value = '';  // Clear the input field
-        generateQuestion(); // Generate the next question
     } else {
-        document.getElementById('feedback').textContent = `Please enter a valid number.`;
+        feedbackElement.textContent = "Please enter a valid number.";
+        feedbackElement.style.color = "orange";  // Set feedback color to orange for invalid input
     }
 }
 
@@ -72,6 +85,10 @@ function endGame() {
     document.getElementById('score').textContent = `Correct answers: ${correctAnswers}/${questionsAnswered}`;
     document.getElementById('time').textContent = `Total time taken: ${minutes}:${seconds}`;
     document.getElementById('finalScore').textContent = `Final score: ${finalScore}`;
+
+    // Clear the question and feedback once the game ends
+    document.getElementById('question').textContent = '';
+    document.getElementById('feedback').textContent = '';
 }
 
 // Restart the game
