@@ -1,4 +1,5 @@
-let totalQuestions = 30;
+
+        let totalQuestions = 30;
         let questionsAnswered = 0;
         let correctAnswers = 0;
         let score = 100;
@@ -46,10 +47,8 @@ let totalQuestions = 30;
             if (answer === currentQuestion) {
                 correctAnswers++;
                 document.getElementById('feedback').textContent = `Correct!`;
-                document.getElementById('feedback').className = 'correct';
             } else {
                 document.getElementById('feedback').textContent = `Wrong! The correct answer is: ${currentQuestion}`;
-                document.getElementById('feedback').className = 'wrong';
                 score -= 3;
             }
 
